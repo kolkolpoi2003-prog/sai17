@@ -105,13 +105,13 @@
                 Откройте для себя оптику, достойную вашего взгляда.
             </p>
 
-            <div class="pt-6 flex gap-6 items-center">
+            <div class="pt-6 flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center w-full">
                 <a href="{% url 'shop:catalog' %}"
-                    class="inline-flex items-center justify-center px-10 py-4 bg-[#1a1a1a] text-white text-sm font-medium uppercase tracking-widest hover:bg-[#333] hover:scale-105 transition-all rounded-full min-w-[200px] shadow-lg">
+                    class="inline-flex items-center justify-center w-full sm:w-auto px-10 py-4 bg-[#1a1a1a] text-white text-sm font-medium uppercase tracking-widest hover:bg-[#333] hover:scale-105 transition-all rounded-full min-w-[200px] shadow-lg">
                     Перейти в каталог
                 </a>
                 <button onclick="openFittingModal()"
-                    class="text-sm font-medium uppercase tracking-widest text-[#1a1a1a] hover:text-[#5a6b47] transition-colors border-b border-gray-300 hover:border-[#5a6b47] pb-1">
+                    class="w-full sm:w-auto text-left sm:text-center text-sm font-medium uppercase tracking-widest text-[#1a1a1a] hover:text-[#5a6b47] transition-colors border-b border-gray-300 hover:border-[#5a6b47] pb-1">
                     Записаться на проверку зрения
                 </button>
             </div>
@@ -353,7 +353,7 @@
             <!-- CTA Card -->
             <div class="md:col-span-8 group">
                 <div
-                    class="relative aspect-[16/9] rounded-[2rem] lg:rounded-[3rem] bg-[#f9f7f2] border border-gray-200/50 p-6 lg:p-20 flex flex-col justify-center items-start overflow-hidden premium-shadow">
+                    class="relative min-h-[450px] md:min-h-0 md:aspect-[16/9] rounded-[2rem] lg:rounded-[3rem] bg-[#f9f7f2] border border-gray-200/50 p-8 lg:p-20 flex flex-col justify-center items-start overflow-hidden premium-shadow">
                     <!-- Background Image (Low Opacity) -->
                     <img src="https://images.unsplash.com/photo-1556740734-7f9a2b7a0f42?q=80&w=2000&auto=format&fit=crop"
                         alt="Background"
@@ -368,20 +368,20 @@
                         class="absolute top-10 right-10 w-24 h-24 border border-[#5a6b47]/10 rounded-full group-hover:scale-110 transition-transform duration-1000">
                     </div>
 
-                    <div class="relative z-10 space-y-8 max-w-lg">
+                    <div class="relative z-10 space-y-6 lg:space-y-8 max-w-lg w-full">
                         <div class="inline-flex items-center gap-2 text-[#5a6b47] mb-2">
                             <span class="w-6 h-[1px] bg-[#5a6b47]"></span>
                             <span class="text-[10px] font-bold uppercase tracking-widest">Персональный сервис</span>
                         </div>
-                        <h3 class="text-4xl lg:text-5xl font-heading text-black leading-tight">
+                        <h3 class="text-3xl lg:text-5xl font-heading text-black leading-tight">
                             Не нашли то,<br>что <span class="italic text-[#5a6b47] font-light">искали?</span>
                         </h3>
-                        <p class="text-lg text-gray-600 font-light leading-relaxed">
+                        <p class="text-base lg:text-lg text-gray-600 font-light leading-relaxed">
                             Наши стилисты и офтальмологи помогут вам подобрать идеальное решение в уютной атмосфере
                             нашего бутика.
                         </p>
                         <button onclick="openFittingModal()"
-                            class="inline-flex items-center justify-center px-10 py-5 bg-[#1a1a1a] text-white text-xs font-bold uppercase tracking-[0.2em] rounded-full hover:bg-black hover:scale-105 hover:shadow-2xl transition-all duration-500">
+                            class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 lg:px-10 lg:py-5 bg-[#1a1a1a] text-white text-xs font-bold uppercase tracking-[0.2em] rounded-full hover:bg-black hover:scale-105 hover:shadow-2xl transition-all duration-500">
                             Записаться на проверку зрения
                         </button>
                     </div>
