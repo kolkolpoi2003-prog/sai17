@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}Результаты поиска — OptikaStore{% endblock %}
+
+{% block content %}
+<section class="py-12 lg:py-20">
+    <div class="container-custom">
+        <h1 class="text-5xl lg:text-7xl font-black uppercase tracking-tighter font-heading mb-4">
+            Поиск <span class="text-gray-300">//</span>
+        </h1>
+
+        <p class="text-gray-500 mb-12 lg:mb-20 text-lg">
+            {% if query %}
+            Найдено <span class="font-bold text-black">{{ products|length }}</span> товаров по запросу "<span
+                class="italic text-black">{{ query }}</span>"
+            {% else %}
+            Введите запрос для поиска
+            {% endif %}
+        </p>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
+            {% for product in products %}
+            {% include 'includes/product_card.html' with product=product %}
+            {% empty %}
+            <div class="col-span-full py-20 lg:py-32 text-center border-t border-gray-100">
+                <h2 class="text-2xl font-black uppercase tracking-tight mb-4">Ничего не найдено</h2>
+                <p class="text-gray-500 mb-8 max-w-sm mx-auto">Мы не смогли найти товары по вашему запросу.</p>
+                <a href="{% url 'shop:catalog' %}"
+                    class="inline-block px-10 py-4 bg-black text-white font-bold uppercase tracking-widest text-sm hover:bg-gray-800 transition-colors">
+                    Посмотреть весь каталог
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

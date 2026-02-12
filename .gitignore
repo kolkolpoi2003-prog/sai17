@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+
+# Static files (collected)
+staticfiles/
+
+# Media uploads
+media/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules (tailwind)
+theme/static_src/node_modules/
+
+# Temp scripts
+fix_layout.py
+fix_product_card.ps1
+list_categories.py
+list_products.py
+resolve_link.py
+llls/
+
+# Docker volumes data
+certbot/
+
+# Logs
+*.log

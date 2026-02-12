@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}Избранное — OptikaStore{% endblock %}
+
+{% block content %}
+<section class="py-10">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <div class="flex flex-col md:flex-row gap-8">
+            <aside class="md:w-56 flex-shrink-0">
+                <div class="bg-white rounded-2xl border border-gray-100 p-4 space-y-1 sticky top-24">
+                    <a href="{% url 'accounts:profile' %}"
+                        class="block py-2.5 px-4 rounded-xl text-gray-600 hover:bg-gray-50 text-sm transition-colors">Профиль</a>
+                    <a href="{% url 'orders:order_history' %}"
+                        class="block py-2.5 px-4 rounded-xl text-gray-600 hover:bg-gray-50 text-sm transition-colors">История
+                        заказов</a>
+                    <a href="{% url 'accounts:wishlist' %}"
+                        class="block py-2.5 px-4 rounded-xl bg-emerald-50 text-emerald-700 font-medium text-sm">Избранное</a>
+                    <form method="post" action="{% url 'accounts:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="block w-full text-left py-2.5 px-4 rounded-xl text-red-500 hover:bg-red-50 text-sm transition-colors">Выйти</button>
+                    </form>
+                </div>
+            </aside>
+
+            <div class="flex-1">
+                <h1 class="text-2xl font-bold mb-6">Избранное</h1>
+                <div class="product-grid grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {% for item in wishlist_items %}
+                    {% include 'includes/product_card.html' with product=item.product in_wishlist=True %}
+                    {% empty %}
+                    <div class="col-span-full text-center py-16 text-gray-400">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        <p class="font-medium">Пока пусто</p>
+                        <a href="{% url 'shop:catalog' %}"
+                            class="inline-block mt-4 text-emerald-600 font-medium hover:underline">Перейти в каталог</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

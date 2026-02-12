@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}О нас — OptikaStore{% endblock %}
+
+{% block content %}
+<section class="py-16">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <h1 class="text-3xl md:text-4xl font-bold text-center mb-12 scroll-animate">О нашей компании</h1>
+
+        <div class="space-y-8 text-gray-600 leading-relaxed">
+            <div class="bg-emerald-50 rounded-3xl p-8 md:p-12 scroll-animate">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">OptikaStore — ваш проводник в мир чёткого зрения</h2>
+                <p class="text-lg">Мы специализируемся на продаже качественных очков и контактных линз от ведущих
+                    мировых производителей. Наша миссия — сделать хорошее зрение доступным для каждого.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 scroll-animate">
+                <div
+                    class="bg-white rounded-2xl border border-gray-100 p-6 text-center hover:shadow-xl transition-shadow">
+                    <div class="text-4xl font-extrabold text-emerald-600 mb-2">5 000+</div>
+                    <p class="text-sm text-gray-500">Моделей в каталоге</p>
+                </div>
+                <div
+                    class="bg-white rounded-2xl border border-gray-100 p-6 text-center hover:shadow-xl transition-shadow">
+                    <div class="text-4xl font-extrabold text-emerald-600 mb-2">10 000+</div>
+                    <p class="text-sm text-gray-500">Довольных клиентов</p>
+                </div>
+                <div
+                    class="bg-white rounded-2xl border border-gray-100 p-6 text-center hover:shadow-xl transition-shadow">
+                    <div class="text-4xl font-extrabold text-emerald-600 mb-2">7 лет</div>
+                    <p class="text-sm text-gray-500">На рынке</p>
+                </div>
+            </div>
+
+            <div class="scroll-animate space-y-4">
+                <h3 class="text-xl font-bold text-gray-900">Наши преимущества</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                        </svg>
+                        <span>Только оригинальная продукция с сертификатами качества</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                        </svg>
+                        <span>Бесплатная консультация офтальмолога</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                        </svg>
+                        <span>Доставка по всей России, курьером в Москве — в день заказа</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                        </svg>
+                        <span>Гарантия 3 года на все оправы</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

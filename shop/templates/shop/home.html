@@ -1,0 +1,758 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}OptikaStore — Премиальная оптика{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const track = document.querySelector('.carousel-track');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = document.getElementById('prevSlide');
+        const nextBtn = document.getElementById('nextSlide');
+
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+        let autoplayInterval;
+
+        function updateCarousel() {
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        function startAutoplay() {
+            autoplayInterval = setInterval(nextSlide, 5000);
+        }
+
+        function stopAutoplay() {
+            clearInterval(autoplayInterval);
+        }
+
+        if (prevBtn && nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                stopAutoplay();
+                nextSlide();
+                startAutoplay();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                stopAutoplay();
+                prevSlide();
+                startAutoplay();
+            });
+        }
+
+        startAutoplay();
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section (Carousel) -->
+<section class="relative bg-[#fdfbf7] overflow-hidden min-h-[90vh] flex items-center">
+    <!-- Carousel Container -->
+    <div class="absolute inset-0 w-full h-full z-0">
+        <div
+            class="carousel-track flex w-full h-full transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]">
+            <!-- Slide 1 -->
+            <div class="carousel-slide min-w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2600&auto=format&fit=crop"
+                    class="w-full h-full object-cover object-center" alt="Slide 1">
+                <div class="absolute inset-0 bg-black/10"></div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-slide min-w-full h-full relative">
+                <img src="{% static 'images/hero/hero_2.avif' %}" class="w-full h-full object-cover object-center"
+                    alt="Slide 2">
+                <div class="absolute inset-0 bg-black/10"></div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-slide min-w-full h-full relative">
+                <img src="{% static 'images/hero/hero_3.avif' %}" class="w-full h-full object-cover object-center"
+                    alt="Slide 3">
+                <div class="absolute inset-0 bg-black/10"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Overlay -->
+    <div class="container-custom relative z-10 py-12 lg:py-20 h-full flex flex-col justify-center">
+        <div
+            class="w-full lg:w-7/12 space-y-8 bg-white/70 backdrop-blur-xl p-12 rounded-[3rem] shadow-2xl border border-white/50">
+            <div class="inline-flex items-center gap-3 mb-2">
+                <span class="w-8 h-[1px] bg-black"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-gray-900">Коллекция 2026</p>
+            </div>
+
+            <h1 class="text-4xl lg:text-7xl font-medium leading-[1.05] tracking-tight text-black font-heading">
+                Ваш стиль.<br>
+                Ваш взгляд.<br>
+                <span class="text-gray-500 italic font-light">Ваша подпись.</span>
+            </h1>
+
+            <p class="text-lg text-gray-800 max-w-md leading-relaxed font-light">
+                Очки — это не просто аксессуар. Это способ заявить о себе без слов.
+                Откройте для себя оптику, достойную вашего взгляда.
+            </p>
+
+            <div class="pt-6 flex gap-6 items-center">
+                <a href="{% url 'shop:catalog' %}"
+                    class="inline-flex items-center justify-center px-10 py-4 bg-[#1a1a1a] text-white text-sm font-medium uppercase tracking-widest hover:bg-[#333] hover:scale-105 transition-all rounded-full min-w-[200px] shadow-lg">
+                    Перейти в каталог
+                </a>
+                <button onclick="openFittingModal()"
+                    class="text-sm font-medium uppercase tracking-widest text-[#1a1a1a] hover:text-[#5a6b47] transition-colors border-b border-gray-300 hover:border-[#5a6b47] pb-1">
+                    Записаться на проверку зрения
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carousel Controls -->
+    <div class="absolute bottom-10 right-10 z-20 flex gap-4">
+        <button id="prevSlide"
+            class="w-14 h-14 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center hover:bg-white transition-all shadow-lg text-black hover:scale-110">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <button id="nextSlide"
+            class="w-14 h-14 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center hover:bg-white transition-all shadow-lg text-black hover:scale-110">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    </div>
+</section>
+
+<!-- Brands Ticker -->
+<!-- Brands Ticker -->
+<div class="py-8 bg-black overflow-hidden border-b border-gray-800">
+    <div class="flex animate-marquee whitespace-nowrap opacity-60 hover:opacity-100 transition-opacity duration-500">
+        <!-- Main Set -->
+        <div class="flex items-center gap-12 pr-12">
+            <span class="text-2xl font-serif text-white italic">Ray-Ban</span>
+            <span class="text-2xl font-serif text-white italic">Prada</span>
+            <span class="text-2xl font-serif text-white italic">Oakley</span>
+            <span class="text-2xl font-serif text-white italic">Gucci</span>
+            <span class="text-2xl font-serif text-white italic">Tom Ford</span>
+            <span class="text-2xl font-serif text-white italic">Versace</span>
+            <span class="text-2xl font-serif text-white italic">Ray-Ban</span>
+            <span class="text-2xl font-serif text-white italic">Prada</span>
+            <span class="text-2xl font-serif text-white italic">Oakley</span>
+            <span class="text-2xl font-serif text-white italic">Gucci</span>
+            <span class="text-2xl font-serif text-white italic">Tom Ford</span>
+            <span class="text-2xl font-serif text-white italic">Versace</span>
+            <span class="text-2xl font-serif text-white italic">Ray-Ban</span>
+            <span class="text-2xl font-serif text-white italic">Prada</span>
+            <span class="text-2xl font-serif text-white italic">Oakley</span>
+            <span class="text-2xl font-serif text-white italic">Gucci</span>
+            <span class="text-2xl font-serif text-white italic">Tom Ford</span>
+            <span class="text-2xl font-serif text-white italic">Versace</span>
+            <span class="text-2xl font-serif text-white italic">Ray-Ban</span>
+            <span class="text-2xl font-serif text-white italic">Prada</span>
+            <span class="text-2xl font-serif text-white italic">Oakley</span>
+            <span class="text-2xl font-serif text-white italic">Gucci</span>
+            <span class="text-2xl font-serif text-white italic">Tom Ford</span>
+            <span class="text-2xl font-serif text-white italic">Versace</span>
+        </div>
+        <!-- Identical Clone for Seamless Loop -->
+        <div class="flex items-center gap-12 pr-12">
+            <span class="text-2xl font-serif text-white italic">Ray-Ban</span>
+            <span class="text-2xl font-serif text-white italic">Prada</span>
+            <span class="text-2xl font-serif text-white italic">Oakley</span>
+            <span class="text-2xl font-serif text-white italic">Gucci</span>
+            <span class="text-2xl font-serif text-white italic">Tom Ford</span>
+            <span class="text-2xl font-serif text-white italic">Versace</span>
+            <span class="text-2xl font-serif text-white italic">Ray-Ban</span>
+            <span class="text-2xl font-serif text-white italic">Prada</span>
+            <span class="text-2xl font-serif text-white italic">Oakley</span>
+            <span class="text-2xl font-serif text-white italic">Gucci</span>
+            <span class="text-2xl font-serif text-white italic">Tom Ford</span>
+            <span class="text-2xl font-serif text-white italic">Versace</span>
+            <span class="text-2xl font-serif text-white italic">Ray-Ban</span>
+            <span class="text-2xl font-serif text-white italic">Prada</span>
+            <span class="text-2xl font-serif text-white italic">Oakley</span>
+            <span class="text-2xl font-serif text-white italic">Gucci</span>
+            <span class="text-2xl font-serif text-white italic">Tom Ford</span>
+            <span class="text-2xl font-serif text-white italic">Versace</span>
+            <span class="text-2xl font-serif text-white italic">Ray-Ban</span>
+            <span class="text-2xl font-serif text-white italic">Prada</span>
+            <span class="text-2xl font-serif text-white italic">Oakley</span>
+            <span class="text-2xl font-serif text-white italic">Gucci</span>
+            <span class="text-2xl font-serif text-white italic">Tom Ford</span>
+            <span class="text-2xl font-serif text-white italic">Versace</span>
+        </div>
+    </div>
+</div>
+
+<!-- Why Choose Us -->
+<section class="py-20 bg-white">
+    <div class="container-custom">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Feature 1 -->
+            <div
+                class="flex flex-col items-center text-center space-y-4 p-8 rounded-3xl hover:bg-gray-50 transition-colors">
+                <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-[#5a6b47] mb-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-heading font-bold">100% Оригинал</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Мы являемся официальными дилерами всех представленных
+                    брендов. Сертификаты соответствия в наличии.</p>
+            </div>
+            <!-- Feature 2 -->
+            <div
+                class="flex flex-col items-center text-center space-y-4 p-8 rounded-3xl hover:bg-gray-50 transition-colors">
+                <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-[#5a6b47] mb-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-heading font-bold">Проверка зрения</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Наши эксперты проведут диагностику и помогут подобрать
+                    оправу, которая идеально дополнит ваш образ и форму лица.</p>
+            </div>
+            <!-- Feature 3 -->
+            <div
+                class="flex flex-col items-center text-center space-y-4 p-8 rounded-3xl hover:bg-gray-50 transition-colors">
+                <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-[#5a6b47] mb-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-heading font-bold">Гарантия 2 года</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Расширенная гарантия на все оправы и линзы. Бесплатное
+                    сервисное обслуживание.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Categories (Каталог) -->
+<section class="py-24 bg-white overflow-hidden">
+    <div class="container-custom">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div class="space-y-4">
+                <div class="inline-flex items-center gap-3">
+                    <span class="w-8 h-[1px] bg-[#1a1a1a]"></span>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Наш ассортимент</p>
+                </div>
+                <h2 class="text-4xl lg:text-5xl font-medium font-heading tracking-tight text-black leading-tight">
+                    Искусство выбора —<br>
+                    <span class="italic text-gray-400 font-light">ваша индивидуальность</span>
+                </h2>
+            </div>
+            <a href="{% url 'shop:catalog' %}"
+                class="group inline-flex items-center gap-4 text-sm font-medium uppercase tracking-widest text-black">
+                <span class="text-dynamic-underline">Смотреть всё</span>
+                <div
+                    class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </div>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
+            <div class="md:col-span-8 group">
+                <a href="{% url 'shop:category_detail' slug='sunglasses' %}"
+                    class="category-card block aspect-[16/9] rounded-[3rem] premium-shadow">
+                    <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=2000&auto=format&fit=crop"
+                        alt="Солнцезащитные очки" class="w-full h-full object-cover" loading="lazy">
+                    <div class="overlay"></div>
+                    <div class="absolute inset-0 p-12 flex flex-col justify-end">
+                        <div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
+                            <span
+                                class="text-[10px] text-white/70 font-bold uppercase tracking-[0.3em] mb-4 block">Collection
+                                2026</span>
+                            <h3 class="text-4xl lg:text-5xl font-heading text-white mb-6">Солнцезащитные<br>очки</h3>
+                            <span
+                                class="inline-flex items-center gap-3 text-white text-xs font-bold uppercase tracking-widest">
+                                Исследовать
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Side Card (Frames) -->
+            <div class="md:col-span-4 group md:mt-12">
+                <a href="{% url 'shop:category_detail' slug='optical' %}"
+                    class="category-card block aspect-[4/5] rounded-[3rem] premium-shadow">
+                    <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=1500&auto=format&fit=crop"
+                        alt="Оправы" class="w-full h-full object-cover" loading="lazy">
+                    <div class="overlay"></div>
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end">
+                        <div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
+                            <span
+                                class="text-[10px] text-white/70 font-bold uppercase tracking-[0.3em] mb-4 block">Essentials</span>
+                            <h3 class="text-3xl font-heading text-white mb-6">Оправы для<br>зрения</h3>
+                            <span
+                                class="inline-flex items-center gap-3 text-white text-xs font-bold uppercase tracking-widest">
+                                Выбрать
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Side Card (Accessories) -->
+            <div class="md:col-span-4 group md:-mt-12">
+                <a href="{% url 'shop:category_detail' slug='accessories' %}"
+                    class="category-card block aspect-[4/5] rounded-[3rem] premium-shadow">
+                    <img src="https://images.unsplash.com/photo-1591076482161-42ce6da69f67?q=80&w=1500&auto=format&fit=crop"
+                        alt="Аксессуары" class="w-full h-full object-cover" loading="lazy">
+                    <div class="overlay"></div>
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end">
+                        <div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
+                            <span
+                                class="text-[10px] text-white/70 font-bold uppercase tracking-[0.3em] mb-4 block">Details</span>
+                            <h3 class="text-3xl font-heading text-white mb-6">Стильные<br>аксессуары</h3>
+                            <span
+                                class="inline-flex items-center gap-3 text-white text-xs font-bold uppercase tracking-widest">
+                                Открыть
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- CTA Card -->
+            <div class="md:col-span-8 group">
+                <div
+                    class="relative aspect-[16/9] rounded-[2rem] lg:rounded-[3rem] bg-[#f9f7f2] border border-gray-200/50 p-6 lg:p-20 flex flex-col justify-center items-start overflow-hidden premium-shadow">
+                    <!-- Background Image (Low Opacity) -->
+                    <img src="https://images.unsplash.com/photo-1556740734-7f9a2b7a0f42?q=80&w=2000&auto=format&fit=crop"
+                        alt="Background"
+                        class="absolute inset-0 w-full h-full object-cover opacity-[0.03] group-hover:opacity-[0.05] transition-opacity duration-1000 grayscale"
+                        loading="lazy">
+
+                    <!-- Decorative elements -->
+                    <div
+                        class="absolute -right-20 -bottom-20 w-96 h-96 bg-[#5a6b47]/10 rounded-full blur-3xl group-hover:bg-[#5a6b47]/15 transition-colors duration-1000">
+                    </div>
+                    <div
+                        class="absolute top-10 right-10 w-24 h-24 border border-[#5a6b47]/10 rounded-full group-hover:scale-110 transition-transform duration-1000">
+                    </div>
+
+                    <div class="relative z-10 space-y-8 max-w-lg">
+                        <div class="inline-flex items-center gap-2 text-[#5a6b47] mb-2">
+                            <span class="w-6 h-[1px] bg-[#5a6b47]"></span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest">Персональный сервис</span>
+                        </div>
+                        <h3 class="text-4xl lg:text-5xl font-heading text-black leading-tight">
+                            Не нашли то,<br>что <span class="italic text-[#5a6b47] font-light">искали?</span>
+                        </h3>
+                        <p class="text-lg text-gray-600 font-light leading-relaxed">
+                            Наши стилисты и офтальмологи помогут вам подобрать идеальное решение в уютной атмосфере
+                            нашего бутика.
+                        </p>
+                        <button onclick="openFittingModal()"
+                            class="inline-flex items-center justify-center px-10 py-5 bg-[#1a1a1a] text-white text-xs font-bold uppercase tracking-[0.2em] rounded-full hover:bg-black hover:scale-105 hover:shadow-2xl transition-all duration-500">
+                            Записаться на проверку зрения
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Best Sellers (Хиты продаж) -->
+{% if hits %}
+<section class="py-20 bg-white">
+    <div class="container-custom">
+        <div class="flex items-end justify-between mb-12">
+            <h2 class="text-4xl font-bold font-heading tracking-tight text-black">Хиты продаж</h2>
+            <a href="{% url 'shop:catalog' %}"
+                class="hidden md:flex items-center gap-2 border border-gray-300 px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
+                Смотреть больше
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-1">
+            {% for product in hits %}
+            {% include 'includes/product_card.html' with product=product %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Promotions (Aкции) -->
+{% if new_products %}
+<section class="py-20">
+    <div class="container-custom">
+        <div class="flex items-end justify-between mb-12">
+            <h2 class="text-4xl font-bold font-heading tracking-tight text-black">Акции</h2>
+            <a href="{% url 'shop:catalog' %}?sort=newest"
+                class="hidden md:flex items-center gap-2 border border-gray-300 px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
+                Смотреть больше
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-1">
+            {% for product in new_products %}
+            {% include 'includes/product_card.html' with product=product %}
+            {% endfor %}
+        </div>
+
+        <div class="mt-12 text-center md:hidden">
+            <a href="{% url 'shop:catalog' %}?sort=newest"
+                class="inline-block border border-gray-300 px-8 py-3 rounded-full text-sm font-medium hover:bg-gray-50">
+                Смотреть больше
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Client Reviews (Social Proof) -->
+<section class="py-24 bg-[#fdfbf7] overflow-hidden">
+    <div class="container-custom">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="inline-flex items-center gap-3 mb-4">
+                <span class="w-8 h-[1px] bg-[#5a6b47]"></span>
+                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6b47]">Отзывы</p>
+                <span class="w-8 h-[1px] bg-[#5a6b47]"></span>
+            </div>
+            <h2 class="text-4xl font-heading font-bold mb-6">Почему нам доверяют</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Review 1 -->
+            <div class="bg-white p-10 rounded-[2rem] shadow-sm hover:shadow-xl transition-shadow duration-300">
+                <div class="flex gap-1 text-[#5a6b47] mb-6">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                </div>
+                <p class="text-gray-600 italic mb-6 leading-relaxed">"Потрясающий сервис! Стилист помог подобрать
+                    оправу, которую я бы сама никогда не заметила, но она сидит идеально. Очень довольна покупкой."</p>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fit=crop&w=100&h=100"
+                            class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-sm">Елена М.</h5>
+                        <p class="text-xs text-gray-400">г. Иркутск</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="bg-white p-10 rounded-[2rem] shadow-sm hover:shadow-xl transition-shadow duration-300">
+                <div class="flex gap-1 text-[#5a6b47] mb-6">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                </div>
+                <p class="text-gray-600 italic mb-6 leading-relaxed">"Искал конкретную модель Ray-Ban, нашел только
+                    здесь. Доставили быстро, упаковка премиальная, всё сертификаты на месте. Рекомендую!"</p>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?fit=crop&w=100&h=100"
+                            class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-sm">Дмитрий К.</h5>
+                        <p class="text-xs text-gray-400">г. Москва</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="bg-white p-10 rounded-[2rem] shadow-sm hover:shadow-xl transition-shadow duration-300">
+                <div class="flex gap-1 text-[#5a6b47] mb-6">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                </div>
+                <p class="text-gray-600 italic mb-6 leading-relaxed">"Приятно удивлена качеством обслуживания. Атмосфера
+                    в бутике очень уютная, никто не торопит. Очки ношу с удовольствием уже полгода."</p>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=100&h=100"
+                            class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-sm">Марина С.</h5>
+                        <p class="text-xs text-gray-400">г. Иркутск</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Personal Discounts Block (Reference Image 5) -->
+<section class="py-24 bg-white">
+    <div class="container-custom">
+        <div class="bg-gray-50 rounded-[3rem] overflow-hidden flex flex-col lg:flex-row shadow-lg">
+            <div class="lg:w-1/2 p-12 lg:p-20 flex flex-col justify-center">
+                <h2 class="text-4xl lg:text-5xl font-bold font-heading mb-6 text-black leading-tight">
+                    Хотите получать<br>персональные скидки?
+                </h2>
+                <p class="text-gray-500 mb-10 text-lg">
+                    Подписывайтесь на новости об акциях и бонусах в нашем магазине!
+                </p>
+
+                <form class="space-y-4 max-w-md">
+                    <input type="email" placeholder="Введите вашу почту"
+                        class="w-full px-6 py-4 bg-transparent border border-gray-300 rounded-full focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all placeholder-gray-400">
+                    <button type="submit"
+                        class="w-full px-6 py-4 bg-[#5a6b47] text-white font-bold rounded-full hover:bg-[#4a5a3a] transition-colors uppercase tracking-wide">
+                        Оставить заявку
+                    </button>
+                    <div class="flex items-start gap-3 mt-4">
+                        <input type="checkbox" id="agreement"
+                            class="mt-1 w-4 h-4 rounded border-gray-300 text-[#5a6b47] focus:ring-[#5a6b47]">
+                        <label for="agreement" class="text-xs text-gray-400 select-none cursor-pointer">
+                            Даю согласие на обработку персональных данных
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="lg:w-1/2 relative bg-gray-200 min-h-[400px] lg:min-h-full">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2560&auto=format&fit=crop"
+                    alt="Business handshake" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fitting Request Modal -->
+<div id="fittingModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdrop"></div>
+
+    <!-- Modal Panel -->
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] w-full max-w-md p-8 relative transform scale-95 opacity-0 transition-all duration-300"
+            id="modalPanel">
+            <!-- Close Button -->
+            <button onclick="closeFittingModal()"
+                class="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- Content -->
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-heading font-bold mb-2">Запись на проверку зрения</h3>
+                <p class="text-gray-500 text-sm">Оставьте свои данные, и мы свяжемся с вами для уточнения деталей</p>
+            </div>
+
+            <form id="fittingForm" class="space-y-4" onsubmit="submitFittingForm(event)">
+                {% csrf_token %}
+                <div>
+                    {{ form.name }}
+                </div>
+                <div>
+                    {{ form.phone }}
+                </div>
+                <div>
+                    {{ form.comment }}
+                </div>
+                <button type="submit"
+                    class="w-full px-6 py-4 bg-[#1a1a1a] text-white font-bold rounded-full hover:bg-black hover:scale-[1.02] transition-all uppercase tracking-wide">
+                    Отправить заявку
+                </button>
+            </form>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="hidden text-center py-8">
+                <div
+                    class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h4 class="text-xl font-bold mb-2">Спасибо!</h4>
+                <p class="text-gray-600">Ваша заявка принята. Мы свяжемся с вами в ближайшее время.</p>
+                <button onclick="closeFittingModal()"
+                    class="mt-6 px-8 py-3 bg-gray-100 text-gray-900 font-medium rounded-full hover:bg-gray-200 transition-colors">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('fittingModal');
+    const backdrop = document.getElementById('modalBackdrop');
+    const panel = document.getElementById('modalPanel');
+    const form = document.getElementById('fittingForm');
+    const successMsg = document.getElementById('successMessage');
+
+    function openFittingModal() {
+        modal.classList.remove('hidden');
+        // Trigger reflow
+        void modal.offsetWidth;
+
+        backdrop.classList.remove('opacity-0');
+        panel.classList.remove('scale-95', 'opacity-0');
+        panel.classList.add('scale-100', 'opacity-100');
+
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFittingModal() {
+        backdrop.classList.add('opacity-0');
+        panel.classList.remove('scale-100', 'opacity-100');
+        panel.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            // Reset form
+            if (!successMsg.classList.contains('hidden')) {
+                setTimeout(() => {
+                    form.classList.remove('hidden');
+                    successMsg.classList.add('hidden');
+                    form.reset();
+                }, 300);
+            }
+        }, 300);
+    }
+
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+        if (e.target === backdrop || e.target.closest('#modalPanel') === null) {
+            closeFittingModal();
+        }
+    });
+
+    async function submitFittingForm(e) {
+        e.preventDefault();
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Отправка...';
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('{% url "shop:fitting_request" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                form.classList.add('hidden');
+                successMsg.classList.remove('hidden');
+            } else {
+                alert('Ошибка: ' + JSON.stringify(data.errors));
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Произошла ошибка при отправке формы');
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalText;
+        }
+    }
+</script>
+
+{% endblock %}

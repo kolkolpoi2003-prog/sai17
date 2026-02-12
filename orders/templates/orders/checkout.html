@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}Оформление заказа — OptikaStore{% endblock %}
+
+{% block content %}
+<section class="py-10">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <h1 class="text-3xl font-bold mb-8">Оформление заказа</h1>
+
+        <form method="post" class="flex flex-col lg:flex-row gap-8">
+            {% csrf_token %}
+            <!-- Form Fields -->
+            <div class="flex-1 space-y-6">
+                <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                    <h3 class="font-bold text-lg mb-4">Контактные данные</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">{{ form.first_name.label
+                                }}</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}<p class="text-red-500 text-xs mt-1">{{
+                                form.first_name.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">{{ form.last_name.label
+                                }}</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}<p class="text-red-500 text-xs mt-1">{{
+                                form.last_name.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">{{ form.email.label }}</label>
+                            {{ form.email }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">{{ form.phone.label }}</label>
+                            {{ form.phone }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                    <h3 class="font-bold text-lg mb-4">Доставка</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">{{ form.city.label }}</label>
+                            {{ form.city }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">{{ form.address.label }}</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="w-1/2">
+                            <label class="block text-sm font-medium text-gray-600 mb-1">{{ form.postal_code.label
+                                }}</label>
+                            {{ form.postal_code }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">{{ form.notes.label }}</label>
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="lg:w-80 flex-shrink-0">
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 sticky top-24">
+                    <h3 class="font-bold text-lg mb-4">Ваш заказ</h3>
+                    <div class="space-y-3 text-sm">
+                        {% for item in cart %}
+                        <div class="flex justify-between items-start">
+                            <span class="text-gray-600 flex-1 mr-2 line-clamp-1">{{ item.product.name }} × {{
+                                item.quantity }}</span>
+                            <span class="font-medium flex-shrink-0">{{ item.total_price|floatformat:0|intcomma }}
+                                ₽</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="flex justify-between text-lg font-bold pt-4 mt-4 border-t border-gray-100">
+                        <span>Итого:</span>
+                        <span>{{ cart.get_total_price|floatformat:0|intcomma }} ₽</span>
+                    </div>
+                    <button type="submit"
+                        class="w-full mt-6 py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 active:scale-[0.98] transition-all">
+                        Подтвердить заказ
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
