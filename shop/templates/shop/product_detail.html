@@ -21,14 +21,14 @@
             <!-- Left Column: New Gallery Implementation -->
             <div class="lg:w-[60%] select-none">
                 <!-- Main Image Container -->
-                <div class="relative bg-gray-50 mb-4 overflow-hidden rounded-xl cursor-zoom-in group"
+                <div class="relative bg-white mb-4 overflow-hidden rounded-xl cursor-zoom-in group flex items-center justify-center border border-gray-100"
                     onclick="openLightbox()">
                     {% if product.main_image %}
                     <img id="main-product-image" src="{{ product.main_image.image.url }}" alt="{{ product.name }}"
-                        class="w-full h-auto object-cover object-center aspect-[4/5] lg:aspect-square transform transition-transform duration-700 hover:scale-105"
+                        class="w-full h-auto max-h-[600px] object-contain object-center aspect-[4/3] lg:aspect-[1.2/1] transform transition-transform duration-700 hover:scale-105"
                         data-index="0">
                     {% else %}
-                    <div class="w-full h-full flex items-center justify-center text-gray-300 aspect-[4/5] bg-gray-100">
+                    <div class="w-full h-full flex items-center justify-center text-gray-300 aspect-[4/3] bg-gray-100">
                         <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -48,16 +48,16 @@
                 <div class="flex gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x" id="thumbnails-container">
                     {% if product.main_image %}
                     <button onclick="switchImage(this, '{{ product.main_image.image.url }}', 0)"
-                        class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 border-2 border-black rounded-lg overflow-hidden transition-all duration-300 p-0.5 snap-start thumbnail-active">
-                        <img src="{{ product.main_image.image.url }}" class="w-full h-full object-cover rounded-md">
+                        class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 bg-white border-2 border-black rounded-lg overflow-hidden transition-all duration-300 p-1 snap-start thumbnail-active flex items-center justify-center">
+                        <img src="{{ product.main_image.image.url }}" class="w-full h-full object-contain rounded-md">
                     </button>
                     {% endif %}
 
                     {% for img in product.images.all %}
                     <button onclick="switchImage(this, '{{ img.image.url }}', {{ forloop.counter }})"
-                        class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 border border-transparent hover:border-gray-300 rounded-lg overflow-hidden transition-all duration-300 opacity-70 hover:opacity-100 snap-start">
+                        class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 bg-white border border-transparent hover:border-gray-300 rounded-lg overflow-hidden transition-all duration-300 opacity-70 hover:opacity-100 snap-start flex items-center justify-center p-1">
                         <img src="{{ img.image.url }}" alt="{{ img.alt }}"
-                            class="w-full h-full object-cover rounded-md">
+                            class="w-full h-full object-contain rounded-md">
                     </button>
                     {% endfor %}
                 </div>
@@ -295,9 +295,9 @@
     onclick="closeLightbox(event)">
 
     <!-- Close Button -->
-    <button onclick="closeLightbox(event)"
-        class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[110] p-2 hover:bg-white/10 rounded-full">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <button onclick="forceCloseLightbox(event)"
+        class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[200] p-4 bg-black/20 hover:bg-white/20 rounded-full cursor-pointer">
+        <svg class="w-8 h-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
         </svg>
     </button>
@@ -423,10 +423,16 @@
         document.querySelectorAll('#thumbnails-container button').forEach(b => {
             b.classList.remove('border-2', 'border-black', 'p-0.5', 'thumbnail-active');
             b.classList.add('border-transparent', 'opacity-70');
+            b.classList.remove('bg-white', 'p-1', 'flex', 'items-center', 'justify-center');
+            b.classList.add('bg-white', 'p-1', 'flex', 'items-center', 'justify-center'); // Ensure new classes
         });
 
         btn.classList.remove('border-transparent', 'opacity-70');
         btn.classList.add('border-2', 'border-black', 'p-0.5', 'thumbnail-active');
+
+        // Fix for removed classes in previous implementation
+        btn.classList.remove('p-0.5');
+        btn.classList.add('p-1');
 
         // Update Main Image with Fade
         mainImage.style.opacity = '0.8';
@@ -457,10 +463,23 @@
     }
 
     function closeLightbox(e) {
-        // Close if clicked on background or close button (not image)
-        if (e && (e.target.closest('#lightbox-image') || e.target.closest('button.group'))) return;
-        if (e && e.target.tagName !== 'DIV' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SVG' && e.target.tagName !== 'path') return;
+        // If e is null, force close
+        if (!e) {
+            _performClose();
+            return;
+        }
+        // Check if clicking direct background or container
+        if (e.target.id === 'lightbox-modal' || e.target.closest('#lightbox-image-container')) {
+            _performClose();
+        }
+    }
 
+    function forceCloseLightbox(e) {
+        e.stopPropagation();
+        _performClose();
+    }
+
+    function _performClose() {
         lightboxModal.classList.add('opacity-0');
         setTimeout(() => {
             lightboxModal.classList.add('hidden');
@@ -471,7 +490,7 @@
     }
 
     function changeLightboxImage(direction, e) {
-        e.stopPropagation();
+        if (e) e.stopPropagation();
         currentImageIndex = (currentImageIndex + direction + productImages.length) % productImages.length;
         updateLightboxContent();
     }
@@ -500,9 +519,9 @@
     document.addEventListener('keydown', (e) => {
         if (lightboxModal.classList.contains('hidden')) return;
 
-        if (e.key === 'Escape') closeLightbox({ target: lightboxModal });
-        if (e.key === 'ArrowLeft') changeLightboxImage(-1, { stopPropagation: () => { } });
-        if (e.key === 'ArrowRight') changeLightboxImage(1, { stopPropagation: () => { } });
+        if (e.key === 'Escape') _performClose();
+        if (e.key === 'ArrowLeft') changeLightboxImage(-1, null);
+        if (e.key === 'ArrowRight') changeLightboxImage(1, null);
     });
 </script>
 {% endblock %}
