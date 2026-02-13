@@ -59,6 +59,12 @@
                 <div>
                     <h3 class="font-bold text-xs uppercase tracking-widest mb-6 border-b border-black pb-2">Бренды</h3>
                     <ul class="space-y-3">
+                        <li>
+                            <a href="{% if request.resolver_match.url_name == 'category_detail' %}{% url 'shop:category_detail' category.slug %}{% else %}{% url 'shop:catalog' %}{% if current_category %}?category={{ current_category.slug }}{% endif %}{% endif %}"
+                                class="text-sm {% if not current_brand %}text-black font-bold pl-2 border-l-2 border-black{% else %}text-gray-500 hover:text-black{% endif %} transition-all block">
+                                Все
+                            </a>
+                        </li>
                         {% for brand in brands %}
                         <li>
                             <a href="?brand={{ brand.slug }}{% if request.resolver_match.url_name == 'catalog' %}{% if current_category %}&category={{ current_category.slug }}{% endif %}{% endif %}"
