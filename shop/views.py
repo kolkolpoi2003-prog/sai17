@@ -7,7 +7,6 @@ from .models import Product, Category, Brand
 from .forms import FittingRequestForm
 
 
-
 def home(request):
     """Главная страница"""
     categories = Category.objects.filter(is_active=True, parent__isnull=True)[:8]
@@ -55,14 +54,12 @@ def catalog(request):
     price_max = request.GET.get('price_max')
     if price_min:
         try:
-            price_min = Decimal(price_min)
-            products = products.filter(price__gte=price_min)
+            products = products.filter(price__gte=Decimal(price_min))
         except (InvalidOperation, ValueError):
             pass
     if price_max:
         try:
-            price_max = Decimal(price_max)
-            products = products.filter(price__lte=price_max)
+            products = products.filter(price__lte=Decimal(price_max))
         except (InvalidOperation, ValueError):
             pass
 
@@ -98,6 +95,7 @@ def catalog(request):
 
 def category_detail(request, slug):
     """Товары конкретной категории"""
+    # Фильтр по категории (основной)
     category = get_object_or_404(Category, slug=slug, is_active=True)
     category_ids = [category.id]
     children = category.children.all()
@@ -108,6 +106,31 @@ def category_detail(request, slug):
         status=Product.Status.AVAILABLE
     ).select_related('category', 'brand').prefetch_related('images')
 
+    # Фильтр по бренду
+    brand_slug = request.GET.get('brand')
+    current_brand = None
+    if brand_slug:
+        current_brand = get_object_or_404(Brand, slug=brand_slug)
+        products = products.filter(brand=current_brand)
+
+    # Фильтр по цене
+    price_min = request.GET.get('price_min')
+    price_max = request.GET.get('price_max')
+    if price_min:
+        try:
+            products = products.filter(price__gte=Decimal(price_min))
+        except (InvalidOperation, ValueError):
+            pass
+    if price_max:
+        try:
+            products = products.filter(price__lte=Decimal(price_max))
+        except (InvalidOperation, ValueError):
+            pass
+
+    # Только акции
+    if request.GET.get('on_sale'):
+        products = products.filter(old_price__isnull=False)
+
     # Сортировка
     sort = request.GET.get('sort', '-created')
     sort_options = {
@@ -115,6 +138,7 @@ def category_detail(request, slug):
         'price_desc': '-price',
         'name': 'name',
         'newest': '-created',
+        'popular': '-is_hit',
     }
     products = products.order_by(sort_options.get(sort, '-created'))
 
@@ -122,9 +146,11 @@ def category_detail(request, slug):
 
     context = {
         'category': category,
+        'current_category': category, # For template compatibility
         'products': products,
         'brands': brands,
         'subcategories': children,
+        'current_brand': current_brand,
         'current_sort': sort,
     }
     return render(request, 'shop/catalog.html', context)
