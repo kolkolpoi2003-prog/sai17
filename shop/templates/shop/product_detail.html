@@ -18,25 +18,49 @@
         </nav>
 
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
-            <!-- Left Column: Image Stack (Urban Romance Style) -->
-            <div class="lg:w-[60%] space-y-4">
-                {% if product.main_image %}
-                <div class="bg-gray-100/50 aspect-[3/4] lg:aspect-[4/5] overflow-hidden relative group">
-                    <img src="{{ product.main_image.image.url }}" alt="{{ product.name }}"
-                        class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                        loading="eager">
-                </div>
-                {% endif %}
+            <!-- Left Column: New Gallery Implementation -->
+            <div class="lg:w-[60%] select-none">
+                <!-- Main Image Container -->
+                <div class="relative bg-gray-50 mb-4 overflow-hidden rounded-xl cursor-zoom-in group"
+                    onclick="openLightbox()">
+                    {% if product.main_image %}
+                    <img id="main-product-image" src="{{ product.main_image.image.url }}" alt="{{ product.name }}"
+                        class="w-full h-auto object-cover object-center aspect-[4/5] lg:aspect-square transform transition-transform duration-700 hover:scale-105"
+                        data-index="0">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-gray-300 aspect-[4/5] bg-gray-100">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </div>
+                    {% endif %}
 
-                {% for img in product.images.all %}
-                {% if not img.is_main %}
-                <div class="bg-gray-100/50 aspect-[3/4] lg:aspect-[4/5] overflow-hidden relative group">
-                    <img src="{{ img.image.url }}" alt="{{ img.alt }}"
-                        class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                        loading="lazy">
+                    <!-- Hover hint -->
+                    <div
+                        class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm pointer-events-none">
+                        Увеличить click
+                    </div>
                 </div>
-                {% endif %}
-                {% endfor %}
+
+                <!-- Thumbnails Strip -->
+                <div class="flex gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x" id="thumbnails-container">
+                    {% if product.main_image %}
+                    <button onclick="switchImage(this, '{{ product.main_image.image.url }}', 0)"
+                        class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 border-2 border-black rounded-lg overflow-hidden transition-all duration-300 p-0.5 snap-start thumbnail-active">
+                        <img src="{{ product.main_image.image.url }}" class="w-full h-full object-cover rounded-md">
+                    </button>
+                    {% endif %}
+
+                    {% for img in product.images.all %}
+                    <button onclick="switchImage(this, '{{ img.image.url }}', {{ forloop.counter }})"
+                        class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 border border-transparent hover:border-gray-300 rounded-lg overflow-hidden transition-all duration-300 opacity-70 hover:opacity-100 snap-start">
+                        <img src="{{ img.image.url }}" alt="{{ img.alt }}"
+                            class="w-full h-full object-cover rounded-md">
+                    </button>
+                    {% endfor %}
+                </div>
             </div>
 
             <!-- Right Column: Product Info (Sticky) -->
@@ -264,6 +288,54 @@
         </button>
     </div>
 </section>
+
+<!-- Lightbox Modal -->
+<div id="lightbox-modal"
+    class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4 lg:p-12 select-none"
+    onclick="closeLightbox(event)">
+
+    <!-- Close Button -->
+    <button onclick="closeLightbox(event)"
+        class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[110] p-2 hover:bg-white/10 rounded-full">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+
+    <!-- Navigation -->
+    <button onclick="changeLightboxImage(-1, event)"
+        class="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-[110] p-4 hover:bg-white/10 rounded-full group">
+        <svg class="w-8 h-8 lg:w-10 lg:h-10 transform group-hover:-translate-x-1 transition-transform" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+
+    <button onclick="changeLightboxImage(1, event)"
+        class="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-[110] p-4 hover:bg-white/10 rounded-full group">
+        <svg class="w-8 h-8 lg:w-10 lg:h-10 transform group-hover:translate-x-1 transition-transform" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+
+    <!-- Image Container -->
+    <div class="relative max-w-full max-h-full flex items-center justify-center w-full h-full">
+        <img id="lightbox-image" src=""
+            class="max-w-full max-h-full object-contain shadow-2xl rounded-sm transition-transform duration-300 scale-95 opacity-0">
+
+        <!-- Loading Spinner -->
+        <div id="lightbox-loader" class="absolute inset-0 flex items-center justify-center">
+            <div class="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Counter -->
+    <div
+        class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur px-4 py-1.5 rounded-full text-white/90 text-xs font-bold tracking-widest">
+        <span id="lightbox-current">1</span> / <span id="lightbox-total">1</span>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -325,5 +397,112 @@
                 });
         });
     }
+</script>
+
+<script>
+    // ==========================================
+    // Gallery & Lightbox Logic
+    // ==========================================
+
+    // Collect all image URLs
+    const productImages = [
+        {% if product.main_image %}'{{ product.main_image.image.url }}', {% endif %}
+    {% for img in product.images.all %} '{{ img.image.url }}', {% endfor %}
+    ];
+    let currentImageIndex = 0;
+
+    // DOM Elements
+    const mainImage = document.getElementById('main-product-image');
+    const lightboxModal = document.getElementById('lightbox-modal');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxLoader = document.getElementById('lightbox-loader');
+
+    // Switch Main Image
+    function switchImage(btn, url, index) {
+        // Update visual state
+        document.querySelectorAll('#thumbnails-container button').forEach(b => {
+            b.classList.remove('border-2', 'border-black', 'p-0.5', 'thumbnail-active');
+            b.classList.add('border-transparent', 'opacity-70');
+        });
+
+        btn.classList.remove('border-transparent', 'opacity-70');
+        btn.classList.add('border-2', 'border-black', 'p-0.5', 'thumbnail-active');
+
+        // Update Main Image with Fade
+        mainImage.style.opacity = '0.8';
+        setTimeout(() => {
+            mainImage.src = url;
+            mainImage.dataset.index = index;
+            mainImage.onload = () => { mainImage.style.opacity = '1'; };
+        }, 150);
+
+        currentImageIndex = index;
+    }
+
+    // Lightbox Control
+    function openLightbox() {
+        if (!productImages.length) return;
+
+        // Initialize state
+        currentImageIndex = parseInt(mainImage.dataset.index) || 0;
+        updateLightboxContent();
+
+        // Show Modal
+        lightboxModal.classList.remove('hidden');
+        // Small delay for CSS transition
+        setTimeout(() => {
+            lightboxModal.classList.remove('opacity-0');
+            document.body.style.overflow = 'hidden'; // Lock scroll
+        }, 10);
+    }
+
+    function closeLightbox(e) {
+        // Close if clicked on background or close button (not image)
+        if (e && (e.target.closest('#lightbox-image') || e.target.closest('button.group'))) return;
+        if (e && e.target.tagName !== 'DIV' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SVG' && e.target.tagName !== 'path') return;
+
+        lightboxModal.classList.add('opacity-0');
+        setTimeout(() => {
+            lightboxModal.classList.add('hidden');
+            document.body.style.overflow = ''; // Unlock scroll
+            // Reset scale/state
+            lightboxImage.classList.add('scale-95', 'opacity-0');
+        }, 300);
+    }
+
+    function changeLightboxImage(direction, e) {
+        e.stopPropagation();
+        currentImageIndex = (currentImageIndex + direction + productImages.length) % productImages.length;
+        updateLightboxContent();
+    }
+
+    function updateLightboxContent() {
+        // Show loader, hide image
+        lightboxLoader.classList.remove('hidden');
+        lightboxImage.classList.add('opacity-0', 'scale-95');
+
+        const newUrl = productImages[currentImageIndex];
+        const tempImg = new Image();
+        tempImg.src = newUrl;
+
+        tempImg.onload = () => {
+            lightboxImage.src = newUrl;
+            lightboxLoader.classList.add('hidden');
+            lightboxImage.classList.remove('opacity-0', 'scale-95');
+
+            // Update counter
+            document.getElementById('lightbox-current').innerText = currentImageIndex + 1;
+            document.getElementById('lightbox-total').innerText = productImages.length;
+        };
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+        if (lightboxModal.classList.contains('hidden')) return;
+
+        if (e.key === 'Escape') closeLightbox({ target: lightboxModal });
+        if (e.key === 'ArrowLeft') changeLightboxImage(-1, { stopPropagation: () => { } });
+        if (e.key === 'ArrowRight') changeLightboxImage(1, { stopPropagation: () => { } });
+    });
 </script>
 {% endblock %}
