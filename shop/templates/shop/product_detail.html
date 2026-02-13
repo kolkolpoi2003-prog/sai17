@@ -4,10 +4,68 @@
 {% block title %}{{ product.name }} — OptikaStore{% endblock %}
 
 {% block content %}
-<section class="py-12 lg:py-20">
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+    }
+
+    .delay-100 {
+        animation-delay: 0.1s;
+    }
+
+    .delay-200 {
+        animation-delay: 0.2s;
+    }
+
+    .delay-300 {
+        animation-delay: 0.3s;
+    }
+
+    .delay-400 {
+        animation-delay: 0.4s;
+    }
+
+    /* Custom Scrollbar for thumbnails */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
+<section class="py-12 lg:py-20 bg-white">
     <div class="container-custom">
+        <!-- Back Button -->
+        <a href="{% url 'shop:catalog' %}"
+            onclick="if(document.referrer.indexOf(window.location.host) !== -1) { history.back(); return false; }"
+            class="inline-flex items-center gap-2 text-gray-400 hover:text-black transition-colors mb-8 group animate-fade-up cursor-pointer">
+            <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7 7-7" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12h18" />
+            </svg>
+            <span class="text-xs font-bold uppercase tracking-widest">Назад</span>
+        </a>
+
         <!-- Breadcrumbs -->
-        <nav class="flex items-center gap-2 text-xs text-gray-400 uppercase tracking-widest font-bold mb-10">
+        <nav
+            class="flex items-center gap-2 text-xs text-gray-400 uppercase tracking-widest font-bold mb-10 animate-fade-up delay-100 hidden lg:flex">
             <a href="{% url 'shop:home' %}" class="hover:text-black transition-colors">Главная</a>
             <span>/</span>
             <a href="{% url 'shop:catalog' %}" class="hover:text-black transition-colors">Каталог</a>
@@ -17,15 +75,15 @@
             </a>
         </nav>
 
-        <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
+        <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative mt-4 lg:mt-0">
             <!-- Left Column: New Gallery Implementation -->
-            <div class="lg:w-[60%] select-none">
+            <div class="lg:w-[60%] select-none animate-fade-up delay-100">
                 <!-- Main Image Container -->
                 <div class="relative bg-white mb-4 overflow-hidden rounded-xl cursor-zoom-in group flex items-center justify-center border border-gray-100"
                     onclick="openLightbox()">
                     {% if product.main_image %}
                     <img id="main-product-image" src="{{ product.main_image.image.url }}" alt="{{ product.name }}"
-                        class="w-full h-auto max-h-[600px] object-contain object-center aspect-[4/3] lg:aspect-[1.2/1] transform transition-transform duration-700 hover:scale-105"
+                        class="w-full h-auto max-h-[600px] object-contain object-center aspect-[4/3] lg:aspect-[1.2/1] transform transition-transform duration-700 hover:scale-105 will-change-transform"
                         data-index="0">
                     {% else %}
                     <div class="w-full h-full flex items-center justify-center text-gray-300 aspect-[4/3] bg-gray-100">
@@ -67,9 +125,9 @@
 
             <!-- Right Column: Product Info (Sticky) -->
             <div class="lg:w-[40%]">
-                <div class="sticky top-32 flex flex-col gap-8">
+                <div class="sticky top-32 flex flex-col gap-8 transition-all duration-300 ease-out">
                     <!-- Product Header -->
-                    <div>
+                    <div class="animate-fade-up delay-200">
                         {% if product.brand %}
                         <p class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
                             {{ product.brand.name }}
@@ -124,9 +182,10 @@
                     </div>
 
                     <!-- Selectors & Add to Cart -->
-                    <div>
+                    <div class="animate-fade-up delay-300">
                         <div class="flex gap-4">
-                            <div class="flex items-center border border-gray-300 rounded-none w-32 h-14">
+                            <div
+                                class="flex items-center border border-gray-300 rounded-none w-32 h-14 hover:border-black transition-colors">
                                 <button
                                     class="w-10 h-full flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-50 transition-colors qty-btn"
                                     data-action="minus">
@@ -165,7 +224,8 @@
                     </div>
 
                     <!-- Accordion Info -->
-                    <div class="space-y-0 divide-y divide-gray-100 border-t border-b border-gray-100">
+                    <div
+                        class="space-y-0 divide-y divide-gray-100 border-t border-b border-gray-100 animate-fade-up delay-400">
                         <details class="group py-4">
                             <summary
                                 class="flex justify-between items-center font-bold text-xs uppercase tracking-widest cursor-pointer list-none select-none hover:text-[#5a6b47] transition-colors">
@@ -204,7 +264,7 @@
 
                     <!-- Specifications -->
                     {% if product.specifications %}
-                    <div class="pt-2">
+                    <div class="pt-2 animate-fade-up delay-400">
                         <h4 class="font-bold text-xs uppercase tracking-widest mb-4 text-gray-400">Характеристики</h4>
                         <dl class="space-y-3 text-sm">
                             {% for key, value in product.specifications.items %}
@@ -218,7 +278,7 @@
                     {% endif %}
 
                     <!-- Trust Badges (Moved Bottom) -->
-                    <div class="grid grid-cols-3 gap-4 pt-4 mt-auto">
+                    <div class="grid grid-cols-3 gap-4 pt-4 mt-auto animate-fade-up delay-400">
                         <div class="flex flex-col items-center text-center gap-2 group">
                             <div
                                 class="w-12 h-12 rounded-full bg-[#f9f7f2] flex items-center justify-center text-[#5a6b47] group-hover:bg-[#5a6b47] group-hover:text-white transition-colors duration-300">
@@ -257,10 +317,11 @@
 
     <!-- Related Products -->
     {% if related_products %}
-    <div class="mt-24 pt-12 border-t border-gray-200">
-        <h2 class="text-2xl font-black uppercase font-heading tracking-tight mb-8">Вам также может понравиться //
+    <div class="container-custom mt-24 pt-12 border-t border-gray-100">
+        <h2 class="text-2xl font-black uppercase font-heading tracking-tight mb-8 animate-fade-up">Вам также может
+            понравиться //
         </h2>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-1">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-1 animate-fade-up delay-200">
             {% for product in related_products %}
             {% include 'includes/product_card.html' with product=product %}
             {% endfor %}
@@ -268,11 +329,9 @@
     </div>
     {% endif %}
 
-    </div>
-
     <!-- Mobile Sticky Footer -->
-    <div
-        class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-gray-100 p-4 lg:hidden z-40 flex items-center justify-between shadow-[0_-5px_20px_rgba(0,0,0,0.05)] safe-area-pb">
+    <div class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 lg:hidden z-40 flex items-center justify-between shadow-[0_-5px_20px_rgba(0,0,0,0.05)] safe-area-pb transform transition-transform duration-300 translate-y-0"
+        id="mobile-sticky-footer">
         <div class="flex flex-col">
             {% if product.brand %}
             <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ product.brand.name }}</span>
@@ -280,7 +339,7 @@
             <span class="text-sm font-bold">{{ product.price|floatformat:0|intcomma }} ₽</span>
         </div>
         <button onclick="document.getElementById('detail-add-to-cart').click()"
-            class="bg-[#1a1a1a] text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors shadow-lg">
+            class="bg-[#1a1a1a] text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors shadow-lg active:scale-95 transform">
             В корзину
         </button>
     </div>
