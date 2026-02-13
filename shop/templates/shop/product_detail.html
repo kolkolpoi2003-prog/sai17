@@ -54,11 +54,13 @@
                     {% endif %}
 
                     {% for img in product.images.all %}
+                    {% if img.image.url != product.main_image.image.url %}
                     <button onclick="switchImage(this, '{{ img.image.url }}', {{ forloop.counter }})"
                         class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 bg-white border border-transparent hover:border-gray-300 rounded-lg overflow-hidden transition-all duration-300 opacity-70 hover:opacity-100 snap-start flex items-center justify-center p-1">
                         <img src="{{ img.image.url }}" alt="{{ img.alt }}"
                             class="w-full h-full object-contain rounded-md">
                     </button>
+                    {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -407,7 +409,11 @@
     // Collect all image URLs
     const productImages = [
         {% if product.main_image %}'{{ product.main_image.image.url }}', {% endif %}
-    {% for img in product.images.all %} '{{ img.image.url }}', {% endfor %}
+    {% for img in product.images.all %}
+    {% if img.image.url != product.main_image.image.url %}
+    '{{ img.image.url }}',
+        {% endif %}
+    {% endfor %}
     ];
     let currentImageIndex = 0;
 
