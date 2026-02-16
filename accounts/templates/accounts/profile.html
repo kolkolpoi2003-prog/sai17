@@ -31,7 +31,7 @@
                     {% csrf_token %}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {% for field in form %}
-                        <div {% if field.name=='address' %}class="md:col-span-2" {% endif %}>
+                        <div {% if "address" in field.name %}class="md:col-span-2" {% endif %}>
                             <label class="block text-sm font-medium text-gray-600 mb-1">{{ field.label }}</label>
                             {{ field }}
                         </div>
