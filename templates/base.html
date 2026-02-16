@@ -419,6 +419,51 @@
         </div>
     </div>
 
+    <!-- Login Prompt Modal -->
+    <div id="authPromptModal" class="fixed inset-0 z-[70] hidden" role="dialog" aria-modal="true">
+        <div
+            class="auth-modal-backdrop absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div
+                class="auth-modal-panel bg-white rounded-3xl w-full max-w-sm p-10 relative transform scale-95 opacity-0 transition-all duration-300 text-center shadow-2xl">
+                <!-- Close -->
+                <button onclick="closeAuthPrompt()"
+                    class="absolute top-4 right-4 text-gray-300 hover:text-black transition-colors p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Icon -->
+                <div class="w-16 h-16 rounded-full bg-[#f9f7f2] flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-[#5a6b47]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </div>
+
+                <!-- Text -->
+                <h3 class="text-xl font-bold font-heading mb-2 text-[#1a1a1a]">Войдите в аккаунт</h3>
+                <p class="text-sm text-gray-400 mb-8 leading-relaxed">Чтобы добавлять товары в избранное,<br>необходимо
+                    авторизоваться</p>
+
+                <!-- Buttons -->
+                <div class="flex flex-col gap-3">
+                    <a href="{% url 'accounts:login' %}"
+                        class="block w-full bg-[#1a1a1a] text-white py-3.5 text-xs font-bold uppercase tracking-[0.2em] hover:bg-black transition-colors rounded-full">
+                        Войти
+                    </a>
+                    <a href="{% url 'accounts:register' %}"
+                        class="block w-full border border-gray-200 text-[#1a1a1a] py-3.5 text-xs font-bold uppercase tracking-[0.2em] hover:border-black transition-colors rounded-full">
+                        Создать аккаунт
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/quick_view.js' %}"></script>
     <script>

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initWishlistButtons();
     initLiveSearch();
     initCartPage();
+    initAuthPrompt();
 });
 
 // ============================================
@@ -192,6 +193,9 @@ function initWishlistButtons() {
         e.preventDefault();
         const productId = btn.dataset.productId;
         if (!productId) return;
+
+        // Bail out — auth prompt handles the UX
+        if (btn.dataset.requiresAuth) return;
 
         const isExplicitRemove = btn.classList.contains('wishlist-remove-btn');
 
@@ -404,4 +408,64 @@ function updateCartTotals(data) {
     if (totalPrice) {
         totalPrice.textContent = parseInt(data.total_price).toLocaleString('ru-RU') + ' ₽';
     }
+}
+
+// ============================================
+// Auth Prompt for Guests
+// ============================================
+function initAuthPrompt() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-requires-auth]');
+        if (!btn) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        openAuthPrompt();
+    });
+
+    // Close on backdrop click
+    const modal = document.getElementById('authPromptModal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target.closest('.auth-modal-panel')) return;
+            closeAuthPrompt();
+        });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            closeAuthPrompt();
+        }
+    });
+}
+
+function openAuthPrompt() {
+    const modal = document.getElementById('authPromptModal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    requestAnimationFrame(() => {
+        modal.querySelector('.auth-modal-backdrop').classList.remove('opacity-0');
+        const panel = modal.querySelector('.auth-modal-panel');
+        panel.classList.remove('scale-95', 'opacity-0');
+        panel.classList.add('scale-100', 'opacity-100');
+    });
+}
+
+function closeAuthPrompt() {
+    const modal = document.getElementById('authPromptModal');
+    if (!modal) return;
+
+    modal.querySelector('.auth-modal-backdrop').classList.add('opacity-0');
+    const panel = modal.querySelector('.auth-modal-panel');
+    panel.classList.add('scale-95', 'opacity-0');
+    panel.classList.remove('scale-100', 'opacity-100');
+
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }, 300);
 }
