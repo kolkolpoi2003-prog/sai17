@@ -6,10 +6,10 @@ from shop.models import Product
 class UserProfile(models.Model):
     """Профиль пользователя"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name='Пользователь')
-    phone = models.CharField('Телефон', max_length=20, blank=True)
-    city = models.CharField('Город', max_length=100, blank=True)
-    address = models.TextField('Адрес', blank=True)
-    avatar = models.ImageField('Аватар', upload_to='avatars/', blank=True)
+    phone = models.CharField('Телефон', max_length=20, blank=True, default='')
+    city = models.CharField('Город', max_length=100, blank=True, default='')
+    address = models.TextField('Адрес', blank=True, default='')
+    avatar = models.ImageField('Аватар', upload_to='avatars/', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Профиль'
