@@ -19,8 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function getCSRFToken() {
     const cookie = document.cookie.match(/csrftoken=([^;]+)/);
     if (cookie) return cookie[1];
-    const meta = document.querySelector('[name=csrfmiddlewaretoken]');
-    return meta ? meta.value : '';
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta) return meta.getAttribute('content');
+    const hidden = document.querySelector('[name=csrfmiddlewaretoken]');
+    return hidden ? hidden.value : '';
 }
 
 // ============================================
@@ -250,6 +252,9 @@ function initWishlistButtons() {
                         }
                     }
                 }
+            })
+            .catch(() => {
+                showToast('Ошибка, попробуйте снова');
             });
     });
 }
