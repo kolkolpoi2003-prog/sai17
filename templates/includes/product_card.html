@@ -48,8 +48,7 @@
             {% else %}
             <button
                 class="wishlist-btn w-9 h-9 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-full text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all shadow-sm border border-gray-100"
-                data-product-id="{{ product.id }}" title="В избранное" {% if not user.is_authenticated
-                %}data-requires-auth="true" {% endif %}>
+                data-product-id="{{ product.id }}" title="В избранное" {% if not user.is_authenticated %}data-requires-auth="true"{% endif %}>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
