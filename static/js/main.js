@@ -230,16 +230,22 @@ function initWishlistButtons() {
                             const card = btn.closest('.product-card');
                             if (card) {
                                 card.style.opacity = '0';
-                                card.style.transform = 'scale(0.95)';
-                                card.style.transition = 'all 0.3s ease';
+                                card.style.transform = 'scale(0.9) translateY(20px)';
+                                card.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
                                 setTimeout(() => {
                                     card.remove();
                                     // If no more items, show the empty message
                                     const grid = document.querySelector('.product-grid');
+                                    const emptyMsg = document.getElementById('empty-wishlist');
                                     if (grid && !grid.querySelector('.product-card')) {
-                                        location.reload();
+                                        if (emptyMsg) {
+                                            emptyMsg.classList.remove('hidden');
+                                            emptyMsg.classList.add('animate-fadeInUp');
+                                        } else {
+                                            location.reload();
+                                        }
                                     }
-                                }, 300);
+                                }, 400);
                             }
                         }
                     }
