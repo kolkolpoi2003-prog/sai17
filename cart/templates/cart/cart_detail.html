@@ -15,60 +15,90 @@
             <!-- Cart Items -->
             <div class="flex-1 space-y-8" id="cart-items">
                 {% for item in cart %}
-                <div class="cart-item flex gap-6 lg:gap-8 items-start pb-8 border-b border-gray-100 last:border-0"
+                <div class="cart-item group bg-white border border-gray-100 rounded-[2rem] p-4 lg:p-6 flex flex-col sm:flex-row gap-6 lg:gap-8 items-center sm:items-start transition-all duration-500 hover:shadow-xl hover:shadow-gray-100/50"
                     data-product-id="{{ item.product.id }}">
 
-                    <!-- Image -->
-                    <div class="w-24 h-32 lg:w-32 lg:h-40 bg-gray-100/50 flex-shrink-0 relative group overflow-hidden">
+                    <!-- Image Section -->
+                    <div
+                        class="w-full sm:w-40 h-48 sm:h-40 bg-gray-50 rounded-2xl flex-shrink-0 relative overflow-hidden flex items-center justify-center p-4">
                         {% if item.product.main_image %}
                         <img src="{{ item.product.main_image.image.url }}" alt="{{ item.product.name }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110">
                         {% endif %}
+
+                        <!-- Quick Remove for Mobile (Top Right on card) -->
+                        <button
+                            class="cart-remove-btn absolute top-2 right-2 sm:hidden w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-black hover:text-red-500 transition-colors shadow-sm"
+                            data-product-id="{{ item.product.id }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <!-- Details -->
-                    <div class="flex-1 flex flex-col justify-between min-h-[8rem] lg:min-h-[10rem]">
-                        <div>
-                            <div class="flex justify-between items-start gap-4">
-                                <div>
-                                    <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-                                        {{ item.product.brand.name }}
-                                    </p>
-                                    <a href="{{ item.product.get_absolute_url }}"
-                                        class="text-lg lg:text-xl font-bold text-black hover:text-gray-600 transition-colors leading-tight block mb-2">
-                                        {{ item.product.name }}
-                                    </a>
-                                </div>
-                                <button class="cart-remove-btn text-black hover:text-red-600 transition-colors"
-                                    data-product-id="{{ item.product.id }}" title="Удалить из корзины">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
+                    <!-- Details Section -->
+                    <div class="flex-1 w-full flex flex-col justify-between py-1">
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="space-y-1">
+                                {% if item.product.brand %}
+                                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-[#5a6b47]">
+                                    {{ item.product.brand.name }}
+                                </p>
+                                {% endif %}
+                                <a href="{{ item.product.get_absolute_url }}"
+                                    class="text-xl lg:text-2xl font-bold text-black hover:text-[#5a6b47] transition-colors leading-tight block">
+                                    {{ item.product.name }}
+                                </a>
                             </div>
+
+                            <!-- Remove Button Desktop -->
+                            <button
+                                class="cart-remove-btn hidden sm:flex w-10 h-10 items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300"
+                                data-product-id="{{ item.product.id }}" title="Удалить из корзины">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                         </div>
 
-                        <div class="flex items-end justify-between mt-4">
-                            <!-- Quantity -->
-                            <div class="flex items-center border border-gray-200 w-24 h-10">
+                        <div class="flex flex-wrap items-end justify-between gap-6 mt-8">
+                            <!-- Quantity Selector -->
+                            <div class="flex items-center bg-gray-50 rounded-full p-1 border border-gray-100">
                                 <button
-                                    class="w-8 h-full flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-50 cart-qty-btn"
-                                    data-product-id="{{ item.product.id }}" data-action="minus">−</button>
-                                <span class="flex-1 text-center text-sm font-bold cart-qty-value">
+                                    class="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-black hover:bg-white rounded-full transition-all cart-qty-btn"
+                                    data-product-id="{{ item.product.id }}" data-action="minus">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M20 12H4" />
+                                    </svg>
+                                </button>
+                                <span class="w-10 text-center text-sm font-bold cart-qty-value">
                                     {{ item.quantity }}
                                 </span>
                                 <button
-                                    class="w-8 h-full flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-50 cart-qty-btn"
-                                    data-product-id="{{ item.product.id }}" data-action="plus">+</button>
+                                    class="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-black hover:bg-white rounded-full transition-all cart-qty-btn"
+                                    data-product-id="{{ item.product.id }}" data-action="plus">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </button>
                             </div>
 
-                            <!-- Price -->
+                            <!-- Price Section -->
                             <div class="text-right">
-                                <p class="font-bold text-lg">{{ item.total_price|floatformat:0|intcomma }} ₽</p>
-                                {% if item.quantity > 1 %}
-                                <p class="text-xs text-gray-400">{{ item.price|floatformat:0|intcomma }} ₽ / шт</p>
-                                {% endif %}
+                                <div class="flex flex-col">
+                                    <span class="text-2xl font-black text-black">
+                                        {{ item.total_price|floatformat:0|intcomma }} ₽
+                                    </span>
+                                    {% if item.quantity > 1 %}
+                                    <span class="text-xs text-gray-400 font-medium">
+                                        {{ item.price|floatformat:0|intcomma }} ₽ / шт
+                                    </span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
